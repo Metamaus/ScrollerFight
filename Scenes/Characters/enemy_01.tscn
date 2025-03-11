@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://cnbru2i0epvh4"]
+[gd_scene load_steps=9 format=3 uid="uid://cnbru2i0epvh4"]
 
 [ext_resource type="Texture2D" uid="uid://cgpw1wdw11l6a" path="res://Art/camelot_ [version 1.0]/lancelot_.png" id="1_4pjxy"]
+[ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_ft0wg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8mpgv"]
 atlas = ExtResource("1_4pjxy")
@@ -43,6 +44,7 @@ radius = 7.0
 height = 20.0
 
 [node name="Enemy01" type="RigidBody2D"]
+script = ExtResource("1_ft0wg")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1

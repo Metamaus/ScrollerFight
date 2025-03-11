@@ -1,8 +1,8 @@
-[gd_scene load_steps=43 format=3 uid="uid://pt4vs1gtvsjh"]
+[gd_scene load_steps=39 format=3 uid="uid://pt4vs1gtvsjh"]
 
 [ext_resource type="Texture2D" uid="uid://c556ve05acahq" path="res://Art/camelot_ [version 1.0]/merlin_.png" id="1_ags5y"]
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_qwl08"]
-[ext_resource type="Texture2D" uid="uid://cp8k1hmftivy2" path="res://Art/camelot_ [version 1.0]/excalibur_.png" id="2_o0gqf"]
+[ext_resource type="PackedScene" uid="uid://cud61ic46j2ev" path="res://Scenes/Equipments/sword_01.tscn" id="3_ay526"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_03iuc"]
 atlas = ExtResource("1_ags5y")
@@ -282,93 +282,18 @@ animations = [{
 radius = 6.0
 height = 16.0
 
-[sub_resource type="Animation" id="Animation_02rnl"]
-resource_name = "attack-right"
-length = 0.5
-loop_mode = 1
-step = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Weapon:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [6, 4, 5, 6, 7]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Weapon:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [0.0, 1.5708]
-}
-
-[sub_resource type="Animation" id="Animation_iaubb"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Weapon:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Weapon:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-
-[sub_resource type="Animation" id="Animation_nk4c0"]
-resource_name = "idle"
-length = 0.1
-step = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Weapon:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_7lwry"]
-_data = {
-"RESET": SubResource("Animation_iaubb"),
-"attack-right": SubResource("Animation_02rnl"),
-"idle": SubResource("Animation_nk4c0")
-}
-
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("equippedWeapon")]
 collision_layer = 2
 script = ExtResource("1_qwl08")
 SPEED = 80.0
 JUMP_VELOCITY = -200.0
+equippedWeapon = NodePath("WeaponHand/Sword01")
 metadata/_edit_group_ = true
+
+[node name="WeaponHand" type="Node2D" parent="."]
+position = Vector2(7, -7)
+
+[node name="Sword01" parent="WeaponHand" instance=ExtResource("3_ay526")]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
@@ -380,18 +305,3 @@ offset = Vector2(0, -4)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -8)
 shape = SubResource("CapsuleShape2D_uipeg")
-
-[node name="Weapon" type="Sprite2D" parent="."]
-visible = false
-texture_filter = 1
-position = Vector2(31, -5)
-texture = ExtResource("2_o0gqf")
-offset = Vector2(-32, -7)
-hframes = 4
-vframes = 4
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Weapon"]
-root_node = NodePath("../..")
-libraries = {
-"": SubResource("AnimationLibrary_7lwry")
-}

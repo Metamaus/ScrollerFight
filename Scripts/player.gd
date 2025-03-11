@@ -5,12 +5,15 @@ signal hit
 @export var SPEED = 300.0
 @export var JUMP_VELOCITY = -400.0
 @export var MAX_LIFE = 2
+@export var equippedWeapon: Weapon
+
 var idle = true
 var lastSideRight = true
 var currentLife
 
 func _ready() -> void:
 	currentLife = MAX_LIFE
+	equippedWeapon.hit_enemy.connect(hitEnemy)
 
 func _physics_process(delta: float) -> void:
 	idle = true
@@ -28,6 +31,9 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		idle = false
 		velocity.y = JUMP_VELOCITY
+	if Input.is_action_just_pressed("base_action"): #todo: check if weapon is equipped
+		equippedWeapon.playAttack(lastSideRight)
+		#return ?
 
 	# Get the input direction and handle the movement/deceleration.
 	var direction := Input.get_axis("move_left", "move_right")
@@ -50,3 +56,7 @@ func _physics_process(delta: float) -> void:
 			$AnimatedSprite2D.animation = "idle-left"
 	$AnimatedSprite2D.play()
 	move_and_slide()
+
+func hitEnemy(enemy_hit: Enemy) -> void:
+	print("Hit!")
+	enemy_hit.receiveDamage(1)
