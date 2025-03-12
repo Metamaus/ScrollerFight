@@ -6,29 +6,34 @@ signal hit
 @export var JUMP_VELOCITY = -400.0
 @export var MAX_LIFE = 2
 @export var equippedWeapon: Weapon
+@export var animations: AnimationPlayer
 
-var idle = true
-var lastSideRight = true
-var currentLife
+var idle: bool
+var shouldIdle: bool
+var lastSideRight: bool
+var currentLife: int
 
 func _ready() -> void:
+	idle = false
+	lastSideRight = true
 	currentLife = MAX_LIFE
 	equippedWeapon.hit_enemy.connect(hitEnemy)
 
 func _physics_process(delta: float) -> void:
-	idle = true
+	shouldIdle = true
 	
 	# Add the gravity.
 	if not is_on_floor():
-		idle = false
+		shouldIdle = false
 		velocity += get_gravity() * delta
 		if lastSideRight:
-			$AnimatedSprite2D.animation = "jump-right"
+			animations.play("jump_right")
 		else:
-			$AnimatedSprite2D.animation = "jump-left"
+			animations.play("jump_left")
 
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor():
+		shouldIdle = false
 		idle = false
 		velocity.y = JUMP_VELOCITY
 	if Input.is_action_just_pressed("base_action"): #todo: check if weapon is equipped
@@ -42,19 +47,21 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 	if velocity.x > 0:
+		shouldIdle = false
 		idle = false
 		lastSideRight = true
-		$AnimatedSprite2D.animation = "run-right"
+		animations.play("move_right")
 	elif velocity.x < 0:
+		shouldIdle = false
 		idle = false
 		lastSideRight = false
-		$AnimatedSprite2D.animation = "run-left"
-	if idle:
+		animations.play("move_left")
+	if shouldIdle and !idle: #shouldn't trigger animation every frame
 		if lastSideRight:
-			$AnimatedSprite2D.animation = "idle-right"
+			animations.play("idle_right")
 		else:
-			$AnimatedSprite2D.animation = "idle-left"
-	$AnimatedSprite2D.play()
+			animations.play("idle_left")
+		idle = true
 	move_and_slide()
 
 func hitEnemy(enemy_hit: Enemy) -> void:
