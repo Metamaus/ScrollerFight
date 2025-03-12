@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://cnbru2i0epvh4"]
 
 [ext_resource type="Texture2D" uid="uid://cgpw1wdw11l6a" path="res://Art/camelot_ [version 1.0]/lancelot_.png" id="1_4pjxy"]
-[ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_ft0wg"]
+[ext_resource type="Script" uid="uid://eq5q30ey0s1d" path="res://Scripts/enemy.gd" id="1_ft0wg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8mpgv"]
 atlas = ExtResource("1_4pjxy")

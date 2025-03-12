@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://b13ry3wswbxsp"]
 
-[ext_resource type="Script" path="res://Scripts/Weapon.gd" id="1_idaya"]
+[ext_resource type="Script" uid="uid://lrqno4hyk6cu" path="res://Scripts/Weapon.gd" id="1_idaya"]
 [ext_resource type="Texture2D" uid="uid://mkfdpd3abv4o" path="res://Art/camelot_ [version 1.0]/staff_ [merlin].png" id="2_aar45"]
 
 [sub_resource type="Animation" id="Animation_32c08"]
@@ -126,9 +126,9 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7ai63"]
 _data = {
-"RESET": SubResource("Animation_32c08"),
-"attack_left": SubResource("Animation_x6d0v"),
-"attack_right": SubResource("Animation_auekr")
+&"RESET": SubResource("Animation_32c08"),
+&"attack_left": SubResource("Animation_x6d0v"),
+&"attack_right": SubResource("Animation_auekr")
 }
 
 [node name="Sword01" type="Node2D" node_paths=PackedStringArray("WeaponAnimations")]

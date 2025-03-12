@@ -1,7 +1,7 @@
 [gd_scene load_steps=39 format=3 uid="uid://pt4vs1gtvsjh"]
 
 [ext_resource type="Texture2D" uid="uid://c556ve05acahq" path="res://Art/camelot_ [version 1.0]/merlin_.png" id="1_ags5y"]
-[ext_resource type="Script" path="res://Scripts/player.gd" id="1_qwl08"]
+[ext_resource type="Script" uid="uid://b2e00yxhl67xi" path="res://Scripts/player.gd" id="1_qwl08"]
 [ext_resource type="PackedScene" uid="uid://cud61ic46j2ev" path="res://Scenes/Equipments/sword_01.tscn" id="3_ay526"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_03iuc"]
