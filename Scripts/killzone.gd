@@ -3,6 +3,7 @@ extends Area2D
 @onready var timer: Timer = $Timer
 
 func _on_body_entered(body: Node2D) -> void:
+#	todo: check if it's the player's body
 	timer.start()
 
 

@@ -1,23 +1,27 @@
 extends CharacterBody2D
 
-signal hit
+signal style_change
 
 @export var SPEED = 300.0
 @export var JUMP_VELOCITY = -400.0
 @export var MAX_LIFE = 2
-@export var equippedWeapon: Weapon
+@export var INIT_STYLE = 1
+#@export var equippedWeapon: Weapon
 @export var animations: AnimationPlayer
 
 var idle: bool
 var shouldIdle: bool
 var lastSideRight: bool
 var currentLife: int
+var currentStyle: int
 
 func _ready() -> void:
 	idle = false
 	lastSideRight = true
 	currentLife = MAX_LIFE
-	equippedWeapon.hit_enemy.connect(hitEnemy)
+	currentStyle = INIT_STYLE
+	style_change.emit(currentStyle)
+	#equippedWeapon.hit_enemy.connect(hitEnemy)
 
 func _physics_process(delta: float) -> void:
 	shouldIdle = true
@@ -30,14 +34,17 @@ func _physics_process(delta: float) -> void:
 			animations.play("jump_right")
 		else:
 			animations.play("jump_left")
+	elif currentStyle < INIT_STYLE:
+		currentStyle += 1
+		style_change.emit(currentStyle)
 
 	# Handle jump.
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	if Input.is_action_just_pressed("jump") and try_jump():
 		shouldIdle = false
 		idle = false
 		velocity.y = JUMP_VELOCITY
-	if Input.is_action_just_pressed("base_action"): #todo: check if weapon is equipped
-		equippedWeapon.playAttack(lastSideRight)
+	#if Input.is_action_just_pressed("base_action"): #todo: add salto ?
+		#equippedWeapon.playAttack(lastSideRight)
 		#return ?
 
 	# Get the input direction and handle the movement/deceleration.
@@ -64,6 +71,16 @@ func _physics_process(delta: float) -> void:
 		idle = true
 	move_and_slide()
 
-func hitEnemy(enemy_hit: Enemy) -> void:
-	print("Hit!")
-	enemy_hit.receiveDamage(1)
+#func hitEnemy(enemy_hit: Enemy) -> void:
+	#print("Hit!")
+	#enemy_hit.receiveDamage(1)
+
+func try_jump() -> bool:
+#	todo: add speed away from the wall in this case
+	if(is_on_floor()): 
+		return true
+	elif(currentStyle > 0):
+		currentStyle = currentStyle - 1
+		style_change.emit(currentStyle)
+		return true
+	return false
