@@ -1,14 +1,15 @@
-[gd_scene load_steps=12 format=3 uid="uid://pt4vs1gtvsjh"]
+[gd_scene load_steps=12 format=3 uid="uid://cdn7fbb22nvga"]
 
-[ext_resource type="Texture2D" uid="uid://c556ve05acahq" path="res://Art/camelot_ [version 1.0]/merlin_.png" id="1_ags5y"]
-[ext_resource type="Script" uid="uid://b2e00yxhl67xi" path="res://Scripts/player.gd" id="1_qwl08"]
+[ext_resource type="Script" uid="uid://b2e00yxhl67xi" path="res://Scripts/player.gd" id="1_xbgwx"]
+[ext_resource type="Texture2D" uid="uid://cs1ijyed55a0n" path="res://Art/MC/Idle/Ody-Idle_Sheet.png" id="2_xbgwx"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uipeg"]
-radius = 6.0
-height = 16.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xbgwx"]
+size = Vector2(20.5714, 82)
 
 [sub_resource type="Animation" id="Animation_gy20a"]
 length = 0.001
+loop_mode = 1
+step = 0.0416667
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -21,12 +22,24 @@ tracks/0/keys = {
 "update": 1,
 "values": [0]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_khnq4"]
 resource_name = "idle_left"
-length = 0.4
+length = 1.25
 loop_mode = 1
-step = 0.1
+step = 0.0416667
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -34,17 +47,29 @@ tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"times": PackedFloat32Array(0, 0.416667, 0.833333, 0.916667),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [4, 5, 6, 7]
+"values": [1, 2, 3, 4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_cqrjx"]
 resource_name = "idle_right"
-length = 0.4
+length = 1.25
 loop_mode = 1
-step = 0.1
+step = 0.0416667
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -52,10 +77,22 @@ tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"times": PackedFloat32Array(0, 0.416667, 0.833333, 0.916667),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [0, 1, 2, 3]
+"values": [1, 2, 3, 4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_xo8ps"]
@@ -140,23 +177,24 @@ _data = {
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations")]
 collision_layer = 2
-script = ExtResource("1_qwl08")
-JUMP_VELOCITY = -600.0
+script = ExtResource("1_xbgwx")
+SPEED = 600.0
+JUMP_VELOCITY = -1400.0
+GRAVITY_MULTIPLIER = 4
 animations = NodePath("Sprite2D/AnimationPlayer")
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -30)
+position = Vector2(-7, -143.5)
 scale = Vector2(3.5, 3.5)
-shape = SubResource("CapsuleShape2D_uipeg")
+shape = SubResource("RectangleShape2D_xbgwx")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture_filter = 1
-scale = Vector2(4, 4)
-texture = ExtResource("1_ags5y")
+position = Vector2(0, -150)
+texture = ExtResource("2_xbgwx")
 offset = Vector2(0, -12)
-hframes = 8
-vframes = 11
+hframes = 3
+vframes = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D"]
 root_node = NodePath("../..")

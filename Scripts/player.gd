@@ -4,7 +4,8 @@ signal style_change
 
 @export var SPEED = 300.0
 @export var JUMP_VELOCITY = -400.0
-@export var MAX_LIFE = 2
+@export var GRAVITY_MULTIPLIER = 3
+#@export var MAX_LIFE = 2
 @export var INIT_STYLE = 1
 #@export var equippedWeapon: Weapon
 @export var animations: AnimationPlayer
@@ -12,13 +13,13 @@ signal style_change
 var idle: bool
 var shouldIdle: bool
 var lastSideRight: bool
-var currentLife: int
+#var currentLife: int
 var currentStyle: int
 
 func _ready() -> void:
 	idle = false
 	lastSideRight = true
-	currentLife = MAX_LIFE
+	#currentLife = MAX_LIFE
 	currentStyle = INIT_STYLE
 	style_change.emit(currentStyle)
 	#equippedWeapon.hit_enemy.connect(hitEnemy)
@@ -29,7 +30,7 @@ func _physics_process(delta: float) -> void:
 	# Add the gravity.
 	if not is_on_floor():
 		shouldIdle = false
-		velocity += get_gravity() * delta
+		velocity += get_gravity() * delta * GRAVITY_MULTIPLIER
 		if lastSideRight:
 			animations.play("jump_right")
 		else:
@@ -46,6 +47,8 @@ func _physics_process(delta: float) -> void:
 	#if Input.is_action_just_pressed("base_action"): #todo: add salto ?
 		#equippedWeapon.playAttack(lastSideRight)
 		#return ?
+	
+	#todo: add sprint for longer jumps
 
 	# Get the input direction and handle the movement/deceleration.
 	var direction := Input.get_axis("move_left", "move_right")
@@ -77,7 +80,7 @@ func _physics_process(delta: float) -> void:
 
 func try_jump() -> bool:
 #	todo: add speed away from the wall in this case
-	if(is_on_floor()): 
+	if(is_on_floor() || is_on_wall()): 
 		return true
 	elif(currentStyle > 0):
 		currentStyle = currentStyle - 1

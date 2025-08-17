@@ -1,0 +1,39 @@
+Projet odysseus
+
+- Plateformes mouvantes
+- objets un peu cachés à ramasser (18?)
+- changer de dimension (portes?)
+- niveau 2: notion de bruit (une vie mais c'est juste que ça réveille les gens)
+
+Obstacles:
+- tente
+- buisson
+- arbuste (plateforme temporaire)
+- arbre
+- maison (?)
+- immeuble
+- balcon
+- parasol
+- table
+- remorque
+
+Thèmes:
+- rue
+- place
+- parc
+
+Décorations:
+- vélo (variations de couleurs)
+- bacs de plantes
+- interraction avec Neko: "Ah il a faillit m'arracher un oeil l'enfoiré"
+- ivy "Coucou toi ! Ah bah elle est partie"
+
+
+2 tilesets:
+- murs/bâtiments: edge fine et centre texturé
+- sols: edge épaisse et centre fondu au noir
+
+Améliorations:
+- tileset en x64 au lieu de 128 ?
+- dessiner le perso dans une résolution plus proche de la résolution finale ?
+- faire les décors avec des traits colorés
