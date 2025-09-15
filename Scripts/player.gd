@@ -5,19 +5,20 @@ signal style_change
 @export var SPEED = 300.0
 @export var JUMP_VELOCITY = -400.0
 @export var GRAVITY_MULTIPLIER = 3
-#@export var MAX_LIFE = 2
 @export var INIT_STYLE = 1
-#@export var equippedWeapon: Weapon
-@export var animations: AnimationPlayer
 
-var idle: bool
+# Animations
+@export var animations: AnimationPlayer
+@export var spriteVisual: Sprite2D
+enum AnimationState {IDLE, MOVE, JUMP}
+
+var animationStatus: AnimationState
 var shouldIdle: bool
 var lastSideRight: bool
-#var currentLife: int
-var currentStyle: int
+var currentStyle: int #double jump points
 
 func _ready() -> void:
-	idle = false
+	play_animation(AnimationState.IDLE)
 	lastSideRight = true
 	#currentLife = MAX_LIFE
 	currentStyle = INIT_STYLE
@@ -31,10 +32,7 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		shouldIdle = false
 		velocity += get_gravity() * delta * GRAVITY_MULTIPLIER
-		if lastSideRight:
-			animations.play("jump_right")
-		else:
-			animations.play("jump_left")
+		play_animation(AnimationState.JUMP)
 	elif currentStyle < INIT_STYLE:
 		currentStyle += 1
 		style_change.emit(currentStyle)
@@ -42,11 +40,8 @@ func _physics_process(delta: float) -> void:
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and try_jump():
 		shouldIdle = false
-		idle = false
 		velocity.y = JUMP_VELOCITY
-	#if Input.is_action_just_pressed("base_action"): #todo: add salto ?
-		#equippedWeapon.playAttack(lastSideRight)
-		#return ?
+	#todo: add salto ?
 	
 	#todo: add sprint for longer jumps
 
@@ -58,25 +53,17 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 	if velocity.x > 0:
 		shouldIdle = false
-		idle = false
 		lastSideRight = true
-		animations.play("move_right")
+		if is_on_floor():
+			play_animation(AnimationState.MOVE)
 	elif velocity.x < 0:
 		shouldIdle = false
-		idle = false
 		lastSideRight = false
-		animations.play("move_left")
-	if shouldIdle and !idle: #shouldn't trigger animation every frame
-		if lastSideRight:
-			animations.play("idle_right")
-		else:
-			animations.play("idle_left")
-		idle = true
+		if is_on_floor():
+			play_animation(AnimationState.MOVE)
+	if shouldIdle and animationStatus != AnimationState.IDLE: #shouldn't trigger animation every frame
+		play_animation(AnimationState.IDLE)
 	move_and_slide()
-
-#func hitEnemy(enemy_hit: Enemy) -> void:
-	#print("Hit!")
-	#enemy_hit.receiveDamage(1)
 
 func try_jump() -> bool:
 #	todo: add speed away from the wall in this case
@@ -87,3 +74,21 @@ func try_jump() -> bool:
 		style_change.emit(currentStyle)
 		return true
 	return false
+
+func play_animation(newState: AnimationState) -> void:
+	spriteVisual.flip_h = lastSideRight
+	if(newState == animationStatus): # should check for direction
+		return
+	if(newState == AnimationState.IDLE):
+		animations.play("idle") # animation names could be a param
+	elif(newState == AnimationState.MOVE): # should deal with starting the actions
+		if(lastSideRight):
+			animations.play("move_right")
+		else:
+			animations.play("move_left")
+	elif(newState == AnimationState.JUMP):
+		if(lastSideRight):
+			animations.play("jump_right")
+		else:
+			animations.play("jump_left")
+	animationStatus = newState;

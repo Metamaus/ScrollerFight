@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="ScrollerFight"
-run/main_scene="uid://bu3bjykixcxev"
+run/main_scene="uid://dpf6larle3rv1"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://Art/icon.svg"
 
