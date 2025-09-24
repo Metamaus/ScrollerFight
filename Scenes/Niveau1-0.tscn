@@ -494,6 +494,7 @@ tile_map_data = PackedByteArray("AAAAAAAAAAACAAAAAAABAAAAAAAAAAAAAAD//wAAAAAAAAA
 tile_set = SubResource("TileSet_tkggj")
 
 [node name="Player" parent="." instance=ExtResource("5_yn75g")]
+INIT_STYLE = 1
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(0, -100)

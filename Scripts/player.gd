@@ -16,14 +16,15 @@ var animationStatus: AnimationState
 var shouldIdle: bool
 var lastSideRight: bool
 var currentStyle: int #double jump points
+var wallJump: Direction #can wall jump
+enum Direction {NONE, LEFT, RIGHT, UP, DOWN}
 
 func _ready() -> void:
 	play_animation(AnimationState.IDLE)
 	lastSideRight = true
-	#currentLife = MAX_LIFE
+	wallJump = Direction.NONE
 	currentStyle = INIT_STYLE
 	style_change.emit(currentStyle)
-	#equippedWeapon.hit_enemy.connect(hitEnemy)
 
 func _physics_process(delta: float) -> void:
 	shouldIdle = true
@@ -33,9 +34,11 @@ func _physics_process(delta: float) -> void:
 		shouldIdle = false
 		velocity += get_gravity() * delta * GRAVITY_MULTIPLIER
 		play_animation(AnimationState.JUMP)
-	elif currentStyle < INIT_STYLE:
-		currentStyle += 1
-		style_change.emit(currentStyle)
+	else:
+		if(currentStyle < INIT_STYLE):
+			currentStyle = INIT_STYLE
+			style_change.emit(currentStyle)
+		wallJump = Direction.NONE
 
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and try_jump():
@@ -67,9 +70,16 @@ func _physics_process(delta: float) -> void:
 
 func try_jump() -> bool:
 #	todo: add speed away from the wall in this case
-	if(is_on_floor() || is_on_wall()): 
+	if(is_on_floor()): 
 		return true
-	elif(currentStyle > 0):
+	elif(is_on_wall()): # should impact jump direction
+		var wallJumpNextDirection = is_wall_jump_allowed()
+		if(wallJumpNextDirection == Direction.NONE):
+			return false
+		# input direction should be able to force wall jump up
+		wallJump = wallJumpNextDirection
+		return true
+	elif(currentStyle > 0): # should play an animation
 		currentStyle = currentStyle - 1
 		style_change.emit(currentStyle)
 		return true
@@ -92,3 +102,23 @@ func play_animation(newState: AnimationState) -> void:
 		else:
 			animations.play("jump_left")
 	animationStatus = newState;
+
+func is_wall_jump_allowed() -> Direction: # return new direction if valide, NONE if invalid
+	if(wallJump == Direction.UP):
+		return Direction.NONE
+	var wallJumpNormal = normal_to_direction(get_wall_normal())
+	if(wallJump != wallJumpNormal):
+		return wallJumpNormal
+	return Direction.NONE
+
+func normal_to_direction(normal : Vector2) -> Direction:
+	var angle = normal.angle_to(Vector2.RIGHT)
+	if(abs(angle) > 0.75*PI):
+		return Direction.LEFT
+	if(abs(angle) < 0.25*PI):
+		return Direction.RIGHT
+	if(angle > 0):
+		return Direction.UP
+	if(angle < 0 ):
+		return Direction.DOWN
+	return Direction.NONE
