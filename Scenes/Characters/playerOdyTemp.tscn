@@ -1,7 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://csccbdnvj70va"]
+[gd_scene load_steps=18 format=3 uid="uid://csccbdnvj70va"]
 
 [ext_resource type="Script" uid="uid://b2e00yxhl67xi" path="res://Scripts/player.gd" id="1_52ynr"]
 [ext_resource type="Texture2D" uid="uid://dhh1pjdl35ml5" path="res://Art/Square.png" id="2_52ynr"]
+[ext_resource type="Script" uid="uid://chtsp32j5vuus" path="res://Scripts/wall_detector.gd" id="3_75tts"]
+[ext_resource type="Script" uid="uid://bvkn4s1ygg6pj" path="res://Scripts/character_animations.gd" id="3_s7hhj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xbgwx"]
 size = Vector2(32, 71.1429)
@@ -46,6 +48,18 @@ tracks/2/keys = {
 "update": 0,
 "values": [0.0]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.14902, 0.517647, 1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_cqrjx"]
 resource_name = "idle_right"
@@ -75,6 +89,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.163265, 0.531422, 0.952536, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_52ynr"]
@@ -106,6 +132,18 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(3.7, 4.8), Vector2(3.75, 4.75), Vector2(3.65, 4.85), Vector2(3.7, 4.8)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.163265, 0.531422, 0.952536, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_gdgf0"]
 resource_name = "jump_right"
@@ -135,6 +173,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(3.7, 4.8), Vector2(3.75, 4.75), Vector2(3.65, 4.85), Vector2(3.7, 4.8)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.163265, 0.531422, 0.952536, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_rucwb"]
@@ -255,6 +305,46 @@ tracks/1/keys = {
 "values": [Vector2(3.5, 5.4), Vector2(3.6, 5.2)]
 }
 
+[sub_resource type="Animation" id="Animation_hybmt"]
+resource_name = "wall_right"
+step = 0.0416667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(3.39394, 5.4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.866264, 0.000544648, 0.855523, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:skew")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_gy20a"]
 _data = {
 &"RESET": SubResource("Animation_gy20a"),
@@ -264,17 +354,35 @@ _data = {
 &"move_left": SubResource("Animation_rucwb"),
 &"move_right": SubResource("Animation_al8ar"),
 &"start_jump_right": SubResource("Animation_s7hhj"),
-&"start_move_right": SubResource("Animation_75tts")
+&"start_move_right": SubResource("Animation_75tts"),
+&"wall_right": SubResource("Animation_hybmt")
 }
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations", "spriteVisual")]
+[sub_resource type="GDScript" id="GDScript_s7hhj"]
+script/source = "extends Area2D
+
+var IsOnWallRight : bool
+var IsOnWallLeft : bool
+
+func _on_body_entered(body: Node2D) -> void:
+	#could just use 2 collision shapes to detect left or right
+	pass
+
+
+func _on_body_exited(body: Node2D) -> void:
+	pass # Replace with function body.
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s7hhj"]
+size = Vector2(16, 255)
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("wallDetector", "animationPlayer")]
 collision_layer = 2
 script = ExtResource("1_52ynr")
 SPEED = 700.0
-JUMP_VELOCITY = -1200.0
 GRAVITY_MULTIPLIER = 4
-animations = NodePath("Sprite2D/AnimationPlayer")
-spriteVisual = NodePath("Sprite2D")
+wallDetector = NodePath("WallDetector")
+animationPlayer = NodePath("Sprite2D/AnimationPlayer")
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -291,8 +399,35 @@ offset = Vector2(0, -25)
 hframes = 3
 vframes = 2
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D" node_paths=PackedStringArray("_spriteVisual")]
 root_node = NodePath("../..")
 libraries = {
 &"": SubResource("AnimationLibrary_gy20a")
 }
+script = ExtResource("3_s7hhj")
+_spriteVisual = NodePath("..")
+
+[node name="WallDetector" type="Node2D" parent="."]
+script = ExtResource("3_75tts")
+
+[node name="Area2Dleft" type="Area2D" parent="WallDetector"]
+script = SubResource("GDScript_s7hhj")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="WallDetector/Area2Dleft"]
+position = Vector2(-65, -127)
+scale = Vector2(1, 0.766423)
+shape = SubResource("RectangleShape2D_s7hhj")
+
+[node name="Area2Dright" type="Area2D" parent="WallDetector"]
+script = SubResource("GDScript_s7hhj")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="WallDetector/Area2Dright"]
+position = Vector2(65, -127)
+scale = Vector2(1, 0.766423)
+shape = SubResource("RectangleShape2D_s7hhj")
+
+[connection signal="wall_collision" from="WallDetector" to="." method="_on_wall_collision"]
+[connection signal="body_entered" from="WallDetector/Area2Dleft" to="WallDetector" method="_on_area_2_dleft_body_entered"]
+[connection signal="body_exited" from="WallDetector/Area2Dleft" to="WallDetector" method="_on_area_2_dleft_body_exited"]
+[connection signal="body_entered" from="WallDetector/Area2Dright" to="WallDetector" method="_on_area_2_dright_body_entered"]
+[connection signal="body_exited" from="WallDetector/Area2Dright" to="WallDetector" method="_on_area_2_dright_body_exited"]

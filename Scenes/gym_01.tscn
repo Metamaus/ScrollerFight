@@ -241,9 +241,6 @@ tile_set = SubResource("TileSet_u0k5s")
 
 [node name="Player" parent="." instance=ExtResource("1_a6104")]
 position = Vector2(-27, 0)
-SPEED = 300.0
-GRAVITY_MULTIPLIER = 3
-INIT_STYLE = 1
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 zoom = Vector2(3, 3)

@@ -175,13 +175,11 @@ _data = {
 &"move_right": SubResource("Animation_al8ar")
 }
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations")]
+[node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 script = ExtResource("1_xbgwx")
-SPEED = 600.0
 JUMP_VELOCITY = -1500.0
 GRAVITY_MULTIPLIER = 4
-animations = NodePath("Sprite2D/AnimationPlayer")
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
