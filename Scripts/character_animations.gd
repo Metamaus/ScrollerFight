@@ -7,10 +7,11 @@ enum AnimationState {IDLE, MOVE, JUMP, WALL}
 
 func play_animation(newState: AnimationState, lastSideRight: bool) -> void:
 	_spriteVisual.flip_h = lastSideRight
-	if(newState == _animationStatus && lastSideRight == _facingRight): # should check for direction
+	if(newState == _animationStatus && lastSideRight == _facingRight):
 		return
 	if(newState == AnimationState.IDLE):
-		play("idle") # animation names could be a param
+		play("idle")
+	# todo: dynamic animation names according to direction
 	elif(newState == AnimationState.MOVE): # should deal with starting the actions
 		if(lastSideRight):
 			play("move_right")
@@ -27,3 +28,9 @@ func play_animation(newState: AnimationState, lastSideRight: bool) -> void:
 		else:
 			play("wall_right") # TEMP
 	_animationStatus = newState;
+
+func play_multiJumpStatus(value: float) -> void:
+	if (value < 0.05):
+		play("no_jump_left")
+	else:
+		play("full_jump")

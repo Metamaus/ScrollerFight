@@ -14,7 +14,7 @@ signal max_style_change
 @export var wallDetector : WallDetector
 
 # Animations
-@export var animationPlayer : CharacterAnimations
+@export var playerVisuals : CharacterVisuals
 var shouldIdle: bool
 var lastSideRight: bool
 var maxStyle: int
@@ -24,13 +24,12 @@ enum Direction {NONE, LEFT, RIGHT, UP, DOWN}
 var upJump: bool
 
 func _ready() -> void:
-	animationPlayer.play_animation(CharacterAnimations.AnimationState.IDLE, lastSideRight)
+	playerVisuals.play_animation(CharacterAnimations.AnimationState.IDLE, lastSideRight)
 	lastSideRight = true
 	wallJump = Direction.NONE
 	currentStyle = INIT_STYLE
 	maxStyle = INIT_STYLE
-	max_style_change.emit(maxStyle)
-	style_change.emit(currentStyle)
+	update_style_visuals()
 
 func _physics_process(delta: float) -> void:
 	shouldIdle = true
@@ -39,7 +38,7 @@ func _physics_process(delta: float) -> void:
 	if is_on_floor():
 		if(currentStyle < maxStyle):
 			currentStyle = maxStyle
-			style_change.emit(currentStyle)
+			update_style_visuals()
 		wallJump = Direction.NONE
 	elif wallDetector.holdingWall:
 		shouldIdle = false
@@ -48,8 +47,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		shouldIdle = false
 		velocity += get_gravity() * delta * GRAVITY_MULTIPLIER
-		animationPlayer.play_animation(CharacterAnimations.AnimationState.JUMP, lastSideRight)
-
+		playerVisuals.play_animation(CharacterAnimations.AnimationState.JUMP, lastSideRight)
 
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") && try_jump():#precise enough
@@ -70,14 +68,14 @@ func _physics_process(delta: float) -> void:
 		shouldIdle = false
 		lastSideRight = true
 		if is_on_floor():
-			animationPlayer.play_animation(CharacterAnimations.AnimationState.MOVE, lastSideRight)
+			playerVisuals.play_animation(CharacterAnimations.AnimationState.MOVE, lastSideRight)
 	elif velocity.x < 0:
 		shouldIdle = false
 		lastSideRight = false
 		if is_on_floor():
-			animationPlayer.play_animation(CharacterAnimations.AnimationState.MOVE, lastSideRight)
+			playerVisuals.play_animation(CharacterAnimations.AnimationState.MOVE, lastSideRight)
 	if shouldIdle: #shouldn't trigger animation every frame
-		animationPlayer.play_animation(CharacterAnimations.AnimationState.IDLE, lastSideRight)
+		playerVisuals.play_animation(CharacterAnimations.AnimationState.IDLE, lastSideRight)
 	move_and_slide()
 
 func try_jump() -> bool:
@@ -94,7 +92,7 @@ func try_jump() -> bool:
 		return true
 	elif(currentStyle > 0): # should play an animation
 		currentStyle = currentStyle - 1
-		style_change.emit(currentStyle)
+		update_style_visuals()
 		print("DoubleJump")
 		return true
 	return false
@@ -121,14 +119,18 @@ func normal_to_direction(normal : Vector2) -> Direction:
 
 
 func _on_wall_collision() -> void:
-	print("Velocity y: ", velocity.y)
 	if velocity.y > 0: # fine tune this
 		velocity.y = 0 #todo: hold only when falling, even if we fall when already on the wall
 	if velocity.y > -250:
-		animationPlayer.play_animation(CharacterAnimations.AnimationState.WALL, lastSideRight)
+		playerVisuals.play_animation(CharacterAnimations.AnimationState.WALL, lastSideRight)
 
 func add_style(value: int) -> void:
 	maxStyle += value
 	currentStyle = maxStyle
+	update_style_visuals()
+
+func update_style_visuals() -> void:
 	max_style_change.emit(maxStyle)
 	style_change.emit(currentStyle)
+	if(maxStyle > 0):
+		playerVisuals.play_multiJumpStatus(currentStyle/float(maxStyle))
