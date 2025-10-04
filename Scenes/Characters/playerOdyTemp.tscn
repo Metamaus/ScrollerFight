@@ -414,16 +414,16 @@ script = ExtResource("3_75tts")
 script = SubResource("GDScript_s7hhj")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="WallDetector/Area2Dleft"]
-position = Vector2(-65, -127)
-scale = Vector2(1, 0.766423)
+position = Vector2(-65, -135)
+scale = Vector2(1, 0.446423)
 shape = SubResource("RectangleShape2D_s7hhj")
 
 [node name="Area2Dright" type="Area2D" parent="WallDetector"]
 script = SubResource("GDScript_s7hhj")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="WallDetector/Area2Dright"]
-position = Vector2(65, -127)
-scale = Vector2(1, 0.766423)
+position = Vector2(65, -135)
+scale = Vector2(1, 0.446423)
 shape = SubResource("RectangleShape2D_s7hhj")
 
 [connection signal="wall_collision" from="WallDetector" to="." method="_on_wall_collision"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=4 uid="uid://dpf6larle3rv1"]
+[gd_scene load_steps=8 format=4 uid="uid://dpf6larle3rv1"]
 
 [ext_resource type="Texture2D" uid="uid://dhh1pjdl35ml5" path="res://Art/Square.png" id="1_k3dvv"]
 [ext_resource type="PackedScene" uid="uid://csccbdnvj70va" path="res://Scenes/Characters/playerOdyTemp.tscn" id="2_hhiy8"]
+[ext_resource type="PackedScene" uid="uid://1lmbn2yxa2wi" path="res://Scenes/UI/player_hud.tscn" id="3_hhiy8"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hhiy8"]
 texture = ExtResource("1_k3dvv")
@@ -57,3 +58,11 @@ tile_set = SubResource("TileSet_kqx8n")
 [node name="Camera2D" type="Camera2D" parent="Player"]
 offset = Vector2(0, -200)
 zoom = Vector2(0.7, 0.7)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="PlayerHud" parent="CanvasLayer" instance=ExtResource("3_hhiy8")]
+
+[connection signal="max_style_change" from="Player" to="CanvasLayer/PlayerHud" method="_on_player_max_style_change"]
+[connection signal="style_change" from="Player" to="CanvasLayer/PlayerHud" method="_on_player_style_change"]
